@@ -8,6 +8,7 @@ words = [
     ("sun", "quyosh"),
     ("book", "kitob"),
     ("water", "suv"),
+    ("worker", "ishchi")
 ]
 
 current_word = {}
