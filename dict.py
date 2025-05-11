@@ -4,11 +4,26 @@ import random
 
 # So'zlar ro'yxati
 words = [
-    ("allow", "ruxsat"),
-    ("notebook", "daftar"),
-    ("sun", "quyosh"),
-    ("watermelon", "qovun"),
-    ("car", "mashina")
+    ("accept", "qabul qilmoq"),
+    ("arrange", "tartibga solmoq, joylashtirmoq"),
+    ("attend", "qatnashmoq, bormoq"),
+    ("balance", "muvozanatda ushlamoq"),
+    ("contrast", "qarama-qarshilik, farq"),
+    ("encourage", "ruhlantirmoq, dalda bermoq"),
+    ("familiar", "tanish, yaxshi biladigan"),
+    ("grab", "tortib olish, darrov ushlab olish, ilib olish"),
+    ("hang", "osmoq, ilib qo‘ymoq"),
+    ("huge, "juda katta, ulkan"),
+    ("necessary", "zarur, majburiy"),
+    ("pattern", "tartib, andoza, naqsh"),
+    ("propose", "taklif qilmoq"),
+    ("purpose", "maqsad, sabab"),
+    ("release", "qo‘yib yubormoq, ozod qilmoq"),
+    ("require", "talab qilmoq, zarur bo‘lmoq"),
+    ("single", "bitta, yagona"),
+    ("success", "muvaffaqiyat"),
+    ("tear", "yirtmoq"),
+    ("theory", "nazariya")
 ]
 
 # Har bir foydalanuvchi uchun so'zlar tarixini saqlash
