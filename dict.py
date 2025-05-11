@@ -1,61 +1,69 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
 import random
 
-# So'zlar ro'yxati (siz keyinchalik fayldan yoki xabar orqali yuklab qo'shasiz)
+# So'zlar ro'yxati
 words = [
-    ("apple", "olma"),
+    ("allow", "ruxsat"),
+    ("notebook", "daftar"),
     ("sun", "quyosh"),
-    ("book", "kitob"),
-    ("water", "suv"),
-    # ...
+    ("watermelon", "qovun"),
+    ("car", "mashina")
 ]
 
-current_word = {}  # Har bir foydalanuvchi uchun alohida
+# Har bir foydalanuvchi uchun so'zlar tarixini saqlash
+user_data = {}
 
 def start(update: Update, context: CallbackContext):
-    update.message.reply_text("Salom! 'next' buyrug‘ini yuboring yoki /next deb yozing.")
-
-def next_word(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
-    word = random.choice(words)
-    current_word[user_id] = word
+    user_data[user_id] = {
+        "shown": [],
+        "current": None
+    }
+    send_new_word(update, context)
 
-    # Ingliz yoki o‘zbek so‘zini ko‘rsatish (tasodifiy)
-    if random.choice([True, False]):
-        display_word = word[0]  # English
-        lang = "Inglizcha"
-    else:
-        display_word = word[1]  # Uzbek
-        lang = "O'zbekcha"
+def send_new_word(update: Update, context: CallbackContext):
+    user_id = update.effective_user.id
+    shown = user_data[user_id]["shown"]
 
-    keyboard = [[InlineKeyboardButton("Tarjimani ko‘rish", callback_data='show_translation')]]
+    remaining = [pair for pair in words if pair not in shown]
+
+    if not remaining:
+        update.message.reply_text("Barcha so‘zlarni ko‘rdingiz!")
+        return
+
+    word_pair = random.choice(remaining)
+    user_data[user_id]["shown"].append(word_pair)
+    user_data[user_id]["current"] = word_pair
+
+    english_word = word_pair[0]
+    keyboard = [[InlineKeyboardButton("Tarjimasi", callback_data="translate")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    update.message.reply_text(f"{lang} so‘z: *{display_word}*", parse_mode="Markdown", reply_markup=reply_markup)
+    update.message.reply_text(english_word, reply_markup=reply_markup)
 
 def button_handler(update: Update, context: CallbackContext):
     query = update.callback_query
-    query.answer()
     user_id = query.from_user.id
+    query.answer()
 
-    if query.data == 'show_translation':
-        word = current_word.get(user_id)
-        if word:
-            query.edit_message_text(text=f"Inglizcha: *{word[0]}*\nO‘zbekcha: *{word[1]}*", parse_mode="Markdown")
-        else:
-            query.edit_message_text("Avval /next buyrug‘ini yuboring.")
+    if query.data == "translate":
+        _, uzbek = user_data[user_id]["current"]
+        query.edit_message_text(text=f"Tarjimasi: {uzbek}")
+
+def next_command(update: Update, context: CallbackContext):
+    send_new_word(update, context)
 
 def main():
     updater = Updater("7859530337:AAFtVShiQa9aZlrlSrS0N4t1ukJwXKJDyxQ", use_context=True)
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("next", next_word))
+    dp.add_handler(CommandHandler("next", next_command))
     dp.add_handler(CallbackQueryHandler(button_handler))
 
     updater.start_polling()
     updater.idle()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
