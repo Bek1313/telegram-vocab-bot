@@ -16,10 +16,15 @@ user_data = {}
 
 def start(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
-    user_data[user_id] = {
-        "shown": [],
-        "current": None
-    }
+
+    # Agar foydalanuvchi hali mavjud bo'lmasa, yangi yozuv yaratiladi
+    if user_id not in user_data:
+        user_data[user_id] = {
+            "shown": [],
+            "current": None
+        }
+
+    update.message.reply_text("So‘zlarni boshlaymiz! Keyingi so‘z uchun /next buyrug'ini yuboring.")
     send_new_word(update, context)
 
 def send_new_word(update: Update, context: CallbackContext):
